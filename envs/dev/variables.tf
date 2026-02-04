@@ -17,3 +17,8 @@ variable "environment" {
   description = "Environment name"
   type        = string
 }
+
+variable "bastion_allowed_cidr" {
+  description = "CIDR block allowed to SSH into the bastion host"
+  type        = string
+}

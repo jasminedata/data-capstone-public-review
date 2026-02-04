@@ -32,7 +32,29 @@ module "s3_gateway_endpoint" {
 module "security_groups" {
   source = "../../modules/security_groups"
 
-  vpc_id = module.vpc.vpc_id
+  vpc_id               = module.vpc.vpc_id
+  bastion_allowed_cidr = var.bastion_allowed_cidr
+
+  common_tags = local.common_tags
+  name_prefix = "Data-FinalProject"
+}
+
+module "iam" {
+  source = "../../modules/iam"
+
+  common_tags = local.common_tags
+  name_prefix = "Data-FinalProject"
+}
+
+module "launch_templates" {
+  source = "../../modules/launch_templates"
+
+  vpc_id                    = module.vpc.vpc_id
+  iam_instance_profile_name = module.iam.instance_profile_name
+
+  bastion_sg_id  = module.security_groups.bastion_sg_id
+  frontend_sg_id = module.security_groups.frontend_sg_id
+  backend_sg_id  = module.security_groups.backend_sg_id
 
   common_tags = local.common_tags
   name_prefix = "Data-FinalProject"
