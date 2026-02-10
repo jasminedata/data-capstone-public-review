@@ -9,13 +9,13 @@ locals {
 module "vpc" {
   source = "../../modules/vpc"
 
-  vpc_cidr           = "10.0.0.0/16"
-  public_subnets     = ["10.0.1.0/24", "10.0.2.0/24"]
-  private_subnets    = ["10.0.3.0/24", "10.0.4.0/24"]
-  availability_zones = ["ap-southeast-1a", "ap-southeast-1b"]
+  vpc_cidr           = var.vpc_cidr
+  public_subnets     = var.public_subnets
+  private_subnets    = var.private_subnets
+  availability_zones = var.availability_zones
 
   common_tags = local.common_tags
-  name_prefix = "Data-FinalProject"
+  name_prefix = var.name_prefix
 }
 
 module "s3_gateway_endpoint" {
@@ -26,7 +26,7 @@ module "s3_gateway_endpoint" {
   region         = var.region
 
   common_tags = local.common_tags
-  name_prefix = "Data-FinalProject"
+  name_prefix = var.name_prefix
 }
 
 module "security_groups" {
@@ -36,14 +36,28 @@ module "security_groups" {
   bastion_allowed_cidr = var.bastion_allowed_cidr
 
   common_tags = local.common_tags
-  name_prefix = "Data-FinalProject"
+  name_prefix = var.name_prefix
+}
+
+module "load_balancers" {
+  source = "../../modules/load_balancers"
+
+  vpc_id = module.vpc.vpc_id
+
+  public_subnet_ids  = module.vpc.public_subnet_ids
+  private_subnet_ids = module.vpc.private_subnet_ids
+
+  frontend_sg_id = module.security_groups.frontend_sg_id
+
+  common_tags = local.common_tags
+  name_prefix = var.name_prefix
 }
 
 module "iam" {
   source = "../../modules/iam"
 
   common_tags = local.common_tags
-  name_prefix = "Data-FinalProject"
+  name_prefix = var.name_prefix
 }
 
 module "launch_templates" {
@@ -57,5 +71,37 @@ module "launch_templates" {
   backend_sg_id  = module.security_groups.backend_sg_id
 
   common_tags = local.common_tags
-  name_prefix = "Data-FinalProject"
+  name_prefix = var.name_prefix
+}
+
+module "frontend_asg" {
+  source = "../../modules/autoscaling"
+
+  name_prefix        = "${var.name_prefix}-frontend"
+  launch_template_id = module.launch_templates.frontend_launch_template_id
+  subnet_ids         = module.vpc.private_subnet_ids
+
+  min_size         = 2
+  desired_capacity = 2
+  max_size         = 4
+
+  target_group_arns = [module.load_balancers.frontend_target_group_arn]
+
+  common_tags = local.common_tags
+}
+
+module "backend_asg" {
+  source = "../../modules/autoscaling"
+
+  name_prefix        = "${var.name_prefix}-backend"
+  launch_template_id = module.launch_templates.backend_launch_template_id
+  subnet_ids         = module.vpc.private_subnet_ids
+
+  min_size         = 2
+  desired_capacity = 2
+  max_size         = 4
+
+  target_group_arns = [module.load_balancers.backend_target_group_arn]
+
+  common_tags = local.common_tags
 }
