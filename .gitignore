@@ -6,6 +6,12 @@
 *.tfvars
 *.tfvars.json
 
+# Ignore the specific folder
+bastion-keypair/
+
+# Ignore any pem file
+*.pem
+
 # OS / Editor
 .vscode/
 .DS_Store
