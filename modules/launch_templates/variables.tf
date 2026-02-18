@@ -37,3 +37,8 @@ variable "backend_nlb_dns_name" {
   description = "Backend NLB DNS name"
   type        = string
 }
+
+variable "bastion_key_name" {
+  description = "EC2 key pair name for bastion SSH access"
+  type        = string
+}

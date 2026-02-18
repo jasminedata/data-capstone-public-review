@@ -46,6 +46,11 @@ variable "name_prefix" {
   type        = string
 }
 
+variable "bastion_key_name" {
+  description = "EC2 key pair name for bastion SSH access"
+  type        = string
+}
+
 variable "console_iam_user_name" {
   description = "IAM user name to grant CloudWatch tag-read console permissions (optional)"
   type        = string

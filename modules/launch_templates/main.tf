@@ -12,6 +12,7 @@ resource "aws_launch_template" "bastion" {
   name_prefix   = "${var.name_prefix}-Bastion-"
   image_id      = data.aws_ami.amazon_linux.id
   instance_type = "t2.micro"
+  key_name      = var.bastion_key_name
 
   iam_instance_profile {
     name = var.iam_instance_profile_name
@@ -43,10 +44,10 @@ resource "aws_launch_template" "frontend" {
   }
 
   user_data = base64encode(
-  templatefile("${path.module}/frontend_userdata.sh.tftpl", {
-    backend_nlb_dns_name = var.backend_nlb_dns_name
-  })
-)
+    templatefile("${path.module}/frontend_userdata.sh.tftpl", {
+      backend_nlb_dns_name = var.backend_nlb_dns_name
+    })
+  )
   tag_specifications {
     resource_type = "instance"
     tags = merge(var.common_tags, {

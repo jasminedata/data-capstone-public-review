@@ -74,6 +74,7 @@ module "launch_templates" {
   frontend_sg_id       = module.security_groups.frontend_sg_id
   backend_sg_id        = module.security_groups.backend_sg_id
   backend_nlb_dns_name = module.load_balancers.backend_nlb_dns_name
+  bastion_key_name     = var.bastion_key_name
 
   common_tags = local.common_tags
   name_prefix = var.name_prefix
