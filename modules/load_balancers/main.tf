@@ -3,7 +3,7 @@ resource "aws_lb" "frontend_alb" {
   name               = "${var.name_prefix}-Frontend-ALB"
   internal           = false
   load_balancer_type = "application"
-  security_groups    = [var.frontend_sg_id]
+  security_groups = [var.alb_sg_id]
   subnets            = var.public_subnet_ids
 
   tags = merge(
@@ -21,14 +21,15 @@ resource "aws_lb_target_group" "frontend_tg" {
   protocol = "HTTP"
   vpc_id  = var.vpc_id
 
-  health_check {
-    path                = "/cgi-bin/fetch_backend.sh"
-    protocol            = "HTTP"
-    matcher             = "200"
-    interval            = 30
-    healthy_threshold   = 2
-    unhealthy_threshold = 2
-  }
+ health_check {
+  path                = "/"
+  protocol            = "HTTP"
+  matcher             = "200"
+  interval            = 30
+  healthy_threshold   = 2
+  unhealthy_threshold = 2
+}
+
 
   tags = merge(
     var.common_tags,

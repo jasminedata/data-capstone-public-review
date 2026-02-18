@@ -8,6 +8,11 @@ variable "bastion_allowed_cidr" {
   type        = string
 }
 
+variable "private_subnets" {
+  description = "Private subnet CIDR blocks used for internal traffic (including NLB nodes)"
+  type        = list(string)
+}
+
 variable "common_tags" {
   description = "Common tags"
   type        = map(string)

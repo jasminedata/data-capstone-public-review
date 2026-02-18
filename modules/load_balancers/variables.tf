@@ -27,3 +27,9 @@ variable "name_prefix" {
   description = "Name prefix for resources"
   type        = string
 }
+
+variable "alb_sg_id" {
+  description = "Security group ID for ALB"
+  type        = string
+}
+

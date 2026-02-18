@@ -32,3 +32,8 @@ variable "name_prefix" {
   description = "Name prefix"
   type        = string
 }
+
+variable "backend_nlb_dns_name" {
+  description = "Backend NLB DNS name"
+  type        = string
+}
