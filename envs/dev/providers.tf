@@ -5,7 +5,7 @@ terraform {
     bucket         = "data-finalproject-terraform-state"
     key            = "final-project/dev/terraform.tfstate"
     region         = "ap-southeast-1"
-    dynamodb_table = "data-finalproject-terraform-lock"
+    use_lockfile   = true
     encrypt        = true
   }
 

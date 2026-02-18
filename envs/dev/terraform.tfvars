@@ -1,6 +1,7 @@
 region       = "ap-southeast-1"
 engineer     = "Data-Jasmine"
 project_code = "Terraform101-CloudIntern"
+console_iam_user_name = "Data-Cloud-Intern"
 environment  = "dev"
 vpc_cidr     = "10.0.0.0/16"
 

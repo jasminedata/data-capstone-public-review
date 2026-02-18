@@ -34,6 +34,7 @@ module "security_groups" {
 
   vpc_id               = module.vpc.vpc_id
   bastion_allowed_cidr = var.bastion_allowed_cidr
+  private_subnets      = var.private_subnets
 
   common_tags = local.common_tags
   name_prefix = var.name_prefix
@@ -47,6 +48,7 @@ module "load_balancers" {
   public_subnet_ids  = module.vpc.public_subnet_ids
   private_subnet_ids = module.vpc.private_subnet_ids
 
+  alb_sg_id      = module.security_groups.alb_sg_id
   frontend_sg_id = module.security_groups.frontend_sg_id
 
   common_tags = local.common_tags
@@ -56,8 +58,10 @@ module "load_balancers" {
 module "iam" {
   source = "../../modules/iam"
 
-  common_tags = local.common_tags
-  name_prefix = var.name_prefix
+  common_tags           = local.common_tags
+  name_prefix           = var.name_prefix
+  console_iam_user_name = var.console_iam_user_name
+  console_iam_role_name = var.console_iam_role_name
 }
 
 module "launch_templates" {
@@ -66,12 +70,29 @@ module "launch_templates" {
   vpc_id                    = module.vpc.vpc_id
   iam_instance_profile_name = module.iam.instance_profile_name
 
-  bastion_sg_id  = module.security_groups.bastion_sg_id
-  frontend_sg_id = module.security_groups.frontend_sg_id
-  backend_sg_id  = module.security_groups.backend_sg_id
+  bastion_sg_id        = module.security_groups.bastion_sg_id
+  frontend_sg_id       = module.security_groups.frontend_sg_id
+  backend_sg_id        = module.security_groups.backend_sg_id
+  backend_nlb_dns_name = module.load_balancers.backend_nlb_dns_name
 
   common_tags = local.common_tags
   name_prefix = var.name_prefix
+}
+
+module "bastion_asg" {
+  source = "../../modules/autoscaling"
+
+  name_prefix        = "${var.name_prefix}-bastion"
+  launch_template_id = module.launch_templates.bastion_launch_template_id
+  subnet_ids         = [module.vpc.public_subnet_ids[0]]
+
+  min_size         = 1
+  desired_capacity = 1
+  max_size         = 1
+
+  target_group_arns = []
+
+  common_tags = local.common_tags
 }
 
 module "frontend_asg" {
