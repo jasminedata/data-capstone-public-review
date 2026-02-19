@@ -3,7 +3,7 @@ resource "aws_lb" "frontend_alb" {
   name               = "${var.name_prefix}-Frontend-ALB"
   internal           = false
   load_balancer_type = "application"
-  security_groups = [var.alb_sg_id]
+  security_groups    = [var.alb_sg_id]
   subnets            = var.public_subnet_ids
 
   tags = merge(
@@ -16,19 +16,20 @@ resource "aws_lb" "frontend_alb" {
 
 # FRONTEND TARGET GROUP (HTTP)
 resource "aws_lb_target_group" "frontend_tg" {
-  name     = "${var.name_prefix}-Frontend-TG"
-  port     = 80
-  protocol = "HTTP"
-  vpc_id  = var.vpc_id
+  name                 = "${var.name_prefix}-Frontend-TG"
+  port                 = 80
+  protocol             = "HTTP"
+  vpc_id               = var.vpc_id
+  deregistration_delay = 120
 
- health_check {
-  path                = "/"
-  protocol            = "HTTP"
-  matcher             = "200"
-  interval            = 30
-  healthy_threshold   = 2
-  unhealthy_threshold = 2
-}
+  health_check {
+    path                = "/"
+    protocol            = "HTTP"
+    matcher             = "200"
+    interval            = 30
+    healthy_threshold   = 2
+    unhealthy_threshold = 2
+  }
 
 
   tags = merge(
@@ -68,10 +69,11 @@ resource "aws_lb" "backend_nlb" {
 
 # BACKEND TARGET GROUP (TCP)
 resource "aws_lb_target_group" "backend_tg" {
-  name     = "${var.name_prefix}-Backend-TG"
-  port     = 80
-  protocol = "TCP"
-  vpc_id  = var.vpc_id
+  name                 = "${var.name_prefix}-Backend-TG"
+  port                 = 80
+  protocol             = "TCP"
+  vpc_id               = var.vpc_id
+  deregistration_delay = 120
 
   health_check {
     protocol            = "TCP"
