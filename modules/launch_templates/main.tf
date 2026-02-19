@@ -14,6 +14,10 @@ resource "aws_launch_template" "bastion" {
   instance_type = "t2.micro"
   key_name      = var.bastion_key_name
 
+  monitoring {
+    enabled = true
+  }
+
   iam_instance_profile {
     name = var.iam_instance_profile_name
   }
@@ -34,6 +38,10 @@ resource "aws_launch_template" "frontend" {
   name_prefix   = "${var.name_prefix}-Frontend-"
   image_id      = data.aws_ami.amazon_linux.id
   instance_type = "t3.micro"
+
+  monitoring {
+    enabled = true
+  }
 
   iam_instance_profile {
     name = var.iam_instance_profile_name
@@ -60,6 +68,10 @@ resource "aws_launch_template" "backend" {
   name_prefix   = "${var.name_prefix}-Backend-"
   image_id      = data.aws_ami.amazon_linux.id
   instance_type = "t3.micro"
+
+  monitoring {
+    enabled = true
+  }
 
   iam_instance_profile {
     name = var.iam_instance_profile_name
