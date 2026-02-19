@@ -43,3 +43,9 @@ variable "common_tags" {
   description = "Common tags applied to instances"
   type        = map(string)
 }
+
+variable "enable_scaling_policies" {
+  description = "Whether to create CPU-based scaling policies and alarms"
+  type        = bool
+  default     = true
+}

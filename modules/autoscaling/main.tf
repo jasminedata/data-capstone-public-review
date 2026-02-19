@@ -6,7 +6,7 @@ resource "aws_autoscaling_group" "this" {
   vpc_zone_identifier = var.subnet_ids
 
   health_check_type         = "ELB"
-  health_check_grace_period = 300
+  health_check_grace_period = 180
 
   target_group_arns = var.target_group_arns
 
@@ -27,6 +27,8 @@ resource "aws_autoscaling_group" "this" {
 
 # SCALE OUT: CPU >= 40% for 1 minute
 resource "aws_autoscaling_policy" "scale_out" {
+  count = var.enable_scaling_policies ? 1 : 0
+
   name                   = "${var.name_prefix}-scale-out"
   autoscaling_group_name = aws_autoscaling_group.this.name
   adjustment_type        = "ChangeInCapacity"
@@ -35,6 +37,8 @@ resource "aws_autoscaling_policy" "scale_out" {
 }
 
 resource "aws_cloudwatch_metric_alarm" "cpu_high" {
+  count = var.enable_scaling_policies ? 1 : 0
+
   alarm_name          = "${var.name_prefix}-cpu-high"
   comparison_operator = "GreaterThanOrEqualToThreshold"
   evaluation_periods  = 1
@@ -44,7 +48,7 @@ resource "aws_cloudwatch_metric_alarm" "cpu_high" {
   statistic           = "Average"
   threshold           = 40
 
-  alarm_actions = [aws_autoscaling_policy.scale_out.arn]
+  alarm_actions = [aws_autoscaling_policy.scale_out[0].arn]
 
   dimensions = {
     AutoScalingGroupName = aws_autoscaling_group.this.name
@@ -53,6 +57,8 @@ resource "aws_cloudwatch_metric_alarm" "cpu_high" {
 
 # SCALE IN: CPU <= 10% for 1 minute
 resource "aws_autoscaling_policy" "scale_in" {
+  count = var.enable_scaling_policies ? 1 : 0
+
   name                   = "${var.name_prefix}-scale-in"
   autoscaling_group_name = aws_autoscaling_group.this.name
   adjustment_type        = "ChangeInCapacity"
@@ -61,6 +67,8 @@ resource "aws_autoscaling_policy" "scale_in" {
 }
 
 resource "aws_cloudwatch_metric_alarm" "cpu_low" {
+  count = var.enable_scaling_policies ? 1 : 0
+
   alarm_name          = "${var.name_prefix}-cpu-low"
   comparison_operator = "LessThanOrEqualToThreshold"
   evaluation_periods  = 1
@@ -70,7 +78,7 @@ resource "aws_cloudwatch_metric_alarm" "cpu_low" {
   statistic           = "Average"
   threshold           = 10
 
-  alarm_actions = [aws_autoscaling_policy.scale_in.arn]
+  alarm_actions = [aws_autoscaling_policy.scale_in[0].arn]
 
   dimensions = {
     AutoScalingGroupName = aws_autoscaling_group.this.name

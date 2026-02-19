@@ -91,7 +91,8 @@ module "bastion_asg" {
   desired_capacity = 1
   max_size         = 1
 
-  target_group_arns = []
+  target_group_arns       = []
+  enable_scaling_policies = false
 
   common_tags = local.common_tags
 }
