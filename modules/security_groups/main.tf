@@ -42,12 +42,11 @@ resource "aws_security_group" "frontend" {
   }
 
   ingress {
-    description = "HTTP traffic (from ALB later)"
-    from_port   = 80
-    to_port     = 80
-    protocol    = "tcp"
+    description     = "HTTP traffic from ALB"
+    from_port       = 80
+    to_port         = 80
+    protocol        = "tcp"
     security_groups = [aws_security_group.alb.id]
-
   }
 
   egress {
@@ -81,13 +80,20 @@ resource "aws_security_group" "backend" {
   }
 
   ingress {
-    description = "HTTP from private subnets (frontend + internal NLB health checks)"
+    description     = "HTTP from frontend SG"
+    from_port       = 80
+    to_port         = 80
+    protocol        = "tcp"
+    security_groups = [aws_security_group.frontend.id]
+  }
+
+  ingress {
+    description = "HTTP from private subnets for internal NLB health checks"
     from_port   = 80
     to_port     = 80
     protocol    = "tcp"
     cidr_blocks = var.private_subnets
   }
-
 
   egress {
     description = "Allow all outbound traffic"
@@ -104,6 +110,7 @@ resource "aws_security_group" "backend" {
     }
   )
 }
+
 # ALB Security Group (Public)
 resource "aws_security_group" "alb" {
   name        = "${var.name_prefix}-ALB-SG"
