@@ -5,6 +5,8 @@
 *.tfplan
 *.tfvars
 *.tfvars.json
+envs/*/s3backend.hcl
+bootstrap/s3backend.hcl
 
 # Ignore the specific folder
 bastion-keypair/
