@@ -92,6 +92,7 @@ module "bastion_asg" {
   max_size         = 1
 
   target_group_arns       = []
+  health_check_type       = "EC2"
   enable_scaling_policies = false
 
   common_tags = local.common_tags
@@ -108,7 +109,8 @@ module "frontend_asg" {
   desired_capacity = 2
   max_size         = 4
 
-  target_group_arns = [module.load_balancers.frontend_target_group_arn]
+  target_group_arns       = [module.load_balancers.frontend_target_group_arn]
+  enable_instance_refresh = true
 
   common_tags = local.common_tags
 }
@@ -124,7 +126,8 @@ module "backend_asg" {
   desired_capacity = 2
   max_size         = 4
 
-  target_group_arns = [module.load_balancers.backend_target_group_arn]
+  target_group_arns       = [module.load_balancers.backend_target_group_arn]
+  enable_instance_refresh = true
 
   common_tags = local.common_tags
 }

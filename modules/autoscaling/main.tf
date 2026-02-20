@@ -5,7 +5,7 @@ resource "aws_autoscaling_group" "this" {
   max_size            = var.max_size
   vpc_zone_identifier = var.subnet_ids
 
-  health_check_type         = "ELB"
+  health_check_type         = var.health_check_type
   health_check_grace_period = 180
 
   target_group_arns = var.target_group_arns
@@ -13,6 +13,18 @@ resource "aws_autoscaling_group" "this" {
   launch_template {
     id      = var.launch_template_id
     version = var.launch_template_version
+  }
+
+  dynamic "instance_refresh" {
+    for_each = var.enable_instance_refresh ? [1] : []
+    content {
+      strategy = "Rolling"
+
+      preferences {
+        min_healthy_percentage = var.instance_refresh_min_healthy_percentage
+        instance_warmup        = var.instance_refresh_warmup
+      }
+    }
   }
 
   dynamic "tag" {

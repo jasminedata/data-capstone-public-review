@@ -39,6 +39,17 @@ variable "target_group_arns" {
   type        = list(string)
 }
 
+variable "health_check_type" {
+  description = "ASG health check type (EC2 or ELB)"
+  type        = string
+  default     = "ELB"
+
+  validation {
+    condition     = contains(["EC2", "ELB"], var.health_check_type)
+    error_message = "health_check_type must be either EC2 or ELB."
+  }
+}
+
 variable "common_tags" {
   description = "Common tags applied to instances"
   type        = map(string)
@@ -48,4 +59,22 @@ variable "enable_scaling_policies" {
   description = "Whether to create CPU-based scaling policies and alarms"
   type        = bool
   default     = true
+}
+
+variable "enable_instance_refresh" {
+  description = "Whether to enable rolling instance refresh for launch template updates"
+  type        = bool
+  default     = false
+}
+
+variable "instance_refresh_min_healthy_percentage" {
+  description = "Minimum healthy percentage during instance refresh"
+  type        = number
+  default     = 50
+}
+
+variable "instance_refresh_warmup" {
+  description = "Warmup time in seconds between refresh steps"
+  type        = number
+  default     = 180
 }
