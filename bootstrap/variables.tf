@@ -13,12 +13,12 @@ variable "engineer" {
   type        = string
 }
 
-variable "state_bucket_name" {
-  description = "S3 bucket name for Terraform remote state"
+variable "name_prefix" {
+  description = "Prefix for naming AWS resources"
   type        = string
 }
 
-variable "dynamodb_table_name" {
-  description = "DynamoDB table name for Terraform state locking"
+variable "state_bucket_name" {
+  description = "S3 bucket name for Terraform remote state"
   type        = string
 }
