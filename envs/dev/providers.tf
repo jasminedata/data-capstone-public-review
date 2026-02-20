@@ -1,13 +1,7 @@
 terraform {
-  required_version = ">= 1.3.0"
+  required_version = ">= 1.10.0"
 
-  backend "s3" {
-    bucket         = "data-finalproject-terraform-state"
-    key            = "final-project/dev/terraform.tfstate"
-    region         = "ap-southeast-1"
-    use_lockfile   = true
-    encrypt        = true
-  }
+  backend "s3" {}
 
   required_providers {
     aws = {
