@@ -1,3 +1,4 @@
+# Resource: aws_autoscaling_group.this.
 resource "aws_autoscaling_group" "this" {
   name_prefix         = "${var.name_prefix}-asg-"
   min_size            = var.min_size
@@ -48,6 +49,7 @@ resource "aws_autoscaling_policy" "scale_out" {
   cooldown               = 60
 }
 
+# Resource: aws_cloudwatch_metric_alarm.cpu_high.
 resource "aws_cloudwatch_metric_alarm" "cpu_high" {
   count = var.enable_scaling_policies ? 1 : 0
 
@@ -78,6 +80,7 @@ resource "aws_autoscaling_policy" "scale_in" {
   cooldown               = 60
 }
 
+# Resource: aws_cloudwatch_metric_alarm.cpu_low.
 resource "aws_cloudwatch_metric_alarm" "cpu_low" {
   count = var.enable_scaling_policies ? 1 : 0
 

@@ -1,3 +1,4 @@
+# Local values reused in this file.
 locals {
   common_tags = {
     Engineer    = var.engineer

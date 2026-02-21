@@ -53,7 +53,7 @@ resource "aws_launch_template" "frontend" {
   }
 
   user_data = base64encode(
-    templatefile("${path.module}/frontend_userdata.sh.tftpl", {
+    templatefile("${path.module}/frontend_userdata.sh", {
       backend_nlb_dns_name = var.backend_nlb_dns_name
     })
   )

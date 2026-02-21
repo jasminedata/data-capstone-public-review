@@ -23,6 +23,7 @@ resource "aws_iam_role" "ec2_role" {
   )
 }
 
+# Data source: aws_iam_policy_document.cloudwatch_tag_read.
 data "aws_iam_policy_document" "cloudwatch_tag_read" {
   statement {
     effect = "Allow"
@@ -37,6 +38,7 @@ data "aws_iam_policy_document" "cloudwatch_tag_read" {
   }
 }
 
+# Resource: aws_iam_policy.cloudwatch_tag_read.
 resource "aws_iam_policy" "cloudwatch_tag_read" {
   name        = "${var.name_prefix}-CloudWatchTagRead"
   description = "Allows CloudWatch and Logs tag metadata reads in console"
@@ -62,6 +64,7 @@ resource "aws_iam_role_policy_attachment" "cloudwatch" {
   policy_arn = "arn:aws:iam::aws:policy/CloudWatchAgentServerPolicy"
 }
 
+# Resource: aws_iam_user_policy_attachment.console_user_cloudwatch_readonly.
 resource "aws_iam_user_policy_attachment" "console_user_cloudwatch_readonly" {
   count = var.console_iam_user_name != null ? 1 : 0
 
@@ -69,6 +72,7 @@ resource "aws_iam_user_policy_attachment" "console_user_cloudwatch_readonly" {
   policy_arn = "arn:aws:iam::aws:policy/CloudWatchReadOnlyAccess"
 }
 
+# Resource: aws_iam_user_policy_attachment.console_user_cloudwatch_tag_read.
 resource "aws_iam_user_policy_attachment" "console_user_cloudwatch_tag_read" {
   count = var.console_iam_user_name != null ? 1 : 0
 
@@ -76,6 +80,7 @@ resource "aws_iam_user_policy_attachment" "console_user_cloudwatch_tag_read" {
   policy_arn = aws_iam_policy.cloudwatch_tag_read.arn
 }
 
+# Resource: aws_iam_role_policy_attachment.console_role_cloudwatch_readonly.
 resource "aws_iam_role_policy_attachment" "console_role_cloudwatch_readonly" {
   count = var.console_iam_role_name != null ? 1 : 0
 
@@ -83,6 +88,7 @@ resource "aws_iam_role_policy_attachment" "console_role_cloudwatch_readonly" {
   policy_arn = "arn:aws:iam::aws:policy/CloudWatchReadOnlyAccess"
 }
 
+# Resource: aws_iam_role_policy_attachment.console_role_cloudwatch_tag_read.
 resource "aws_iam_role_policy_attachment" "console_role_cloudwatch_tag_read" {
   count = var.console_iam_role_name != null ? 1 : 0
 

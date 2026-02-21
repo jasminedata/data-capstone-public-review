@@ -1,3 +1,4 @@
+# Terraform settings for this stack.
 terraform {
   required_version = ">= 1.10.0"
 
@@ -11,6 +12,7 @@ terraform {
   }
 }
 
+# Provider configuration for aws.
 provider "aws" {
   region = var.region
 }
